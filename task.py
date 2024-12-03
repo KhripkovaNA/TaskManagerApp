@@ -21,9 +21,10 @@ class Task:
 
     def present_task(self) -> str:
         """Форматирует задачу для вывода"""
+        padding = " " * len(f"ID: {self.id}, ")
         return (f"ID: {self.id}, Название: {self.title}, Категория: {self.category}\n"
-                f"\tОписание: {self.description}\n"
-                f"\tСрок: {self.due_date}, Приоритет: {self.priority}, Статус: {self.status}")
+                f"{padding}Описание: {self.description}\n"
+                f"{padding}Срок: {self.due_date}, Приоритет: {self.priority}, Статус: {self.status}")
 
     def to_dict(self) -> Dict:
         """Преобразует объект задачи в словарь для сохранения в JSON"""

@@ -5,7 +5,7 @@ from task_manager import TaskManager
 
 def list_tasks(tasks_manager: TaskManager, option: str) -> None:
     category = None
-    if option == "2":
+    if option == "2" and tasks_manager.tasks:
         while True:
             category = input("Введите категорию задачи или введите 'отмена' для возврата в основное меню: ").strip()
 
