@@ -1,5 +1,5 @@
-from service import add_task, edit_task, update_status, delete_task, search_tasks, list_tasks
-from task_manager import TaskManager
+from app.service import add_task, edit_task, update_status, delete_task, search_tasks, list_tasks
+from app.task_manager import TaskManager
 
 FILENAME = "tasks.json"
 
