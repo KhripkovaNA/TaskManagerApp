@@ -52,6 +52,17 @@ class TaskManager:
         """Получает задачу по ID"""
         return next((task for task in self.tasks if task.id == task_id), None)
 
+    def get_tasks(self, keyword: Optional[str] = None, category: Optional[str] = None,
+                  status: Optional[str] = None) -> List[Task]:
+        """Получает задачи по ключевому слову, категории или статусу"""
+        if keyword:
+            return [task for task in self.tasks if
+                    keyword.lower() in task.title.lower() or keyword.lower() in task.description.lower()]
+        if category:
+            return [task for task in self.tasks if task.category.lower() == category.lower()]
+        if status:
+            return [task for task in self.tasks if task.status.lower() == status.lower()]
+
     def edit_task(self, task_id: int,
                   title: Optional[str] = None,
                   description: Optional[str] = None,
@@ -101,25 +112,24 @@ class TaskManager:
                 print(f"Задача с ID {task_id} успешно удалена")
 
         if category:  # Удаление задач по категории
-            initial_count = len(self.tasks)
-            self.tasks = [task for task in self.tasks if task.category.lower() != category.lower()]
-            if len(self.tasks) == initial_count:
-                print(f"Задачи из категории '{category}' не найдены")
-            else:
+            tasks = self.get_tasks(category=category)
+            if tasks:
+                self.tasks = [task for task in self.tasks if task not in tasks]
                 self.save_tasks()
                 print(f"Задачи из категории '{category}' успешно удалены")
+            else:
+                print(f"Задачи из категории '{category}' не найдены")
 
     def search_tasks(self, keyword: Optional[str] = None, category: Optional[str] = None,
                      status: Optional[str] = None) -> None:
         """Поиск задач по ключевому слову, категории или статусу"""
-        results = self.tasks
+        results = []
         if keyword:
-            results = [task for task in results if
-                       keyword.lower() in task.title.lower() or keyword.lower() in task.description.lower()]
+            results = self.get_tasks(keyword=keyword)
         if category:
-            results = [task for task in results if task.category.lower() == category.lower()]
+            results = self.get_tasks(category=category)
         if status:
-            results = [task for task in results if task.status.lower() == status.lower()]
+            results = self.get_tasks(status=status)
         if results:
             print("Результаты поиска:")
             print(*[task.present_task() for task in results], sep='\n')

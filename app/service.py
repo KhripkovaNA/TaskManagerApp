@@ -53,7 +53,7 @@ def add_task(tasks_manager: TaskManager) -> None:
                     continue
                 new_task_dict[task_option] = user_input.lower()
             else:
-                new_task_dict[task_option] = user_input
+                new_task_dict[task_option] = user_input.capitalize()
 
             break  # Переход к следующему полю
 
@@ -71,16 +71,22 @@ def edit_task_by_field() -> Dict:
                  "2": {"name": "description", "meaning": "описание", "input_str": "Введите новое описание задачи"},
                  "3": {"name": "category", "meaning": "категория", "input_str": "Введите новую категорию задачи"},
                  "4": {"name": "due_date", "meaning": "срок выполнения",
-                       "input_str": "Введите новый срок исполнения задачи"},
-                 "5": {"name": "priority", "meaning": "приоритет", "input_str": "Введите новый приоритет задачи"}}
+                       "input_str": "Введите новый срок исполнения задачи (дд.мм.гггг)"},
+                 "5": {"name": "priority", "meaning": "приоритет",
+                       "input_str": "Введите новый приоритет задачи (низкий/средний/высокий)"}}
     edit_dict = {}
     while field_map:
-        print("Выберите поле для редактирования или введите 'отмена' для возврата в основное меню")
+        print("\nВыберите поле для редактирования или введите 'завершить' или 'отмена'")
         fields_to_edit = ", ".join([f"{key} - {value['meaning']}" for key, value in field_map.items()])
         field = input(f"{fields_to_edit}: ").strip()
 
-        if field.lower() == "отмена":
+        if field == "завершить":
+            print("Редактирование задачи завершено")
+            break
+
+        if field == "отмена":
             print("Редактирование задачи отменено")
+            edit_dict = {}
             break
 
         if field not in field_map:
@@ -95,7 +101,7 @@ def edit_task_by_field() -> Dict:
             continue
 
         if not new_field:
-            print("Поле не может быть пустым! Редактирование поля '{field_data['meaning']}' отменено")
+            print(f"Поле не может быть пустым! Редактирование поля '{field_data['meaning']}' отменено")
             continue
 
         # Обработка специфичных полей
@@ -114,13 +120,8 @@ def edit_task_by_field() -> Dict:
 
         # Сохранение нового значения
         edit_dict[field_data["name"]] = new_field
+        print(f"Новое поле '{field_data['meaning']}' сохранено")
         del field_map[field]  # Удаляем обработанное поле
-
-        if field_map:
-            continue_edit = input(
-                "Введите 'да', чтобы завершить редактирование задачи, или нажмите Enter для продолжения: ").strip()
-            if continue_edit.lower() == "да":
-                break
 
     return edit_dict
 
@@ -151,10 +152,7 @@ def edit_task(tasks_manager: TaskManager) -> None:
         updated_fields = edit_task_by_field()
         if updated_fields:
             tasks_manager.edit_task(task_id, **updated_fields)
-            return
-        else:
-            print("Редактирование задачи отменено")
-            return
+        return
 
 
 def update_status(tasks_manager: TaskManager) -> None:
@@ -181,7 +179,7 @@ def delete_task(tasks_manager: TaskManager, option: str) -> None:
         if option == "id":
             user_input = input("Введите ID задачи для удаления или введите 'отмена' для возврата в основное меню: ")
             if user_input.lower() == "отмена":
-                print("Изменение статуса отменено")
+                print("Удаление задач отменено")
                 return
             try:
                 task_id = int(user_input)
@@ -191,18 +189,31 @@ def delete_task(tasks_manager: TaskManager, option: str) -> None:
             except ValueError:
                 print("Некорректный ID! Введите число")
                 continue
-            del_options["task_id"] = int(user_input)
+
+            task = tasks_manager.get_task(task_id)
+            tasks = [task] if task else []
+            del_options["task_id"] = task_id
 
         else:
             category = input("Введите категорию для удаления задач или введите "
                              "'отмена' для возврата в основное меню: ").strip()
             if category.lower() == "отмена":
-                print("Редактирование задачи отменено")
+                print("Удаление задач отменено")
                 return
             if not category:
                 print("Категория не может быть пустой!")
                 continue
+
+            tasks = tasks_manager.get_tasks(category=category)
             del_options["category"] = category
+
+        if tasks:
+            print("Следующие задачи будут удалены:")
+            print(*[task.present_task() for task in tasks], sep="\n")
+            confirmation = input("Введите 'да', чтобы продолжить удаление: ").strip()
+            if confirmation.lower() != "да":
+                print("Удаление задач отменено")
+                return
 
         tasks_manager.delete_tasks(**del_options)
         return
@@ -232,3 +243,4 @@ def search_tasks(tasks_manager: TaskManager, option: str) -> None:
 
         search_dict[option_data["search_key"]] = search_option
         tasks_manager.search_tasks(**search_dict)
+        return
