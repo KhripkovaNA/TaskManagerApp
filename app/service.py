@@ -9,7 +9,7 @@ def list_tasks(tasks_manager: TaskManager, option: str) -> None:
         while True:
             category = input("Введите категорию задачи или введите 'отмена' для возврата в основное меню: ").strip()
 
-            if category.lower() == "отмена":
+            if category == "отмена":
                 print("Просмотр задач отменен")
                 return
 
@@ -32,7 +32,7 @@ def add_task(tasks_manager: TaskManager) -> None:
         while True:
             user_input = input(f"{input_str}: ").strip()
 
-            if user_input.lower() == "отмена":
+            if user_input == "отмена":
                 print("Добавление задачи отменено")
                 return
 
@@ -53,11 +53,11 @@ def add_task(tasks_manager: TaskManager) -> None:
                     continue
                 new_task_dict[task_option] = user_input.lower()
             else:
-                new_task_dict[task_option] = user_input.capitalize()
+                new_task_dict[task_option] = user_input[0].upper() + user_input[1:]
 
-            break  # Переход к следующему полю
+            break
 
-    # Убедимся, что все данные заполнены
+    # Проверка, что все данные заполнены
     if None in new_task_dict.values():
         print("Не удалось создать задачу")
         return
@@ -96,7 +96,7 @@ def edit_task_by_field() -> Dict:
         field_data = field_map[field]
         new_field = input(f"{field_data['input_str']} или введите 'отмена': ").strip()
 
-        if new_field.lower() == "отмена":
+        if new_field == "отмена":
             print(f"Редактирование поля '{field_data['meaning']}' отменено")
             continue
 
@@ -117,6 +117,9 @@ def edit_task_by_field() -> Dict:
                 print(f"Некорректный приоритет! Редактирование поля '{field_data['meaning']}' отменено")
                 continue
             new_field = new_field.lower()
+
+        else:
+            new_field = new_field[0].upper() + new_field[1:]
 
         # Сохранение нового значения
         edit_dict[field_data["name"]] = new_field
@@ -144,7 +147,7 @@ def edit_task(tasks_manager: TaskManager) -> None:
         task = tasks_manager.get_task(task_id)
         if not task:
             print(f"Задача с ID {task_id} не найдена")
-            continue
+            return
 
         print("Текущие данные задачи:")
         print(task.present_task())

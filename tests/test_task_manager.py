@@ -4,7 +4,7 @@ from app.task_manager import TaskManager
 
 @pytest.fixture
 def task_manager(tmp_path):
-    """Создаёт временный экземпляр TaskManager с тестовым файлом"""
+    """Создает временный экземпляр TaskManager с тестовым файлом"""
     test_file = f"{tmp_path}/test_tasks.json"
     return TaskManager(test_file)
 
@@ -15,7 +15,7 @@ def test_add_task(task_manager, capsys):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
 
@@ -24,7 +24,7 @@ def test_add_task(task_manager, capsys):
     task = task_manager.tasks[0]
     assert task.description == "Пройти основы языка"
     assert task.category == "Обучение"
-    assert task.due_date == "30.11.2024"
+    assert task.due_date == "30.01.2025"
     assert task.priority == "высокий"
     assert f"Задача 'Изучить Python' добавлена с ID {task.id}" in output
 
@@ -39,14 +39,14 @@ def test_list_tasks(task_manager, capsys):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
     task_manager.add_task(
         title="Пройти курс Django",
         description="Изучить основы Django",
         category="Работа",
-        due_date="01.12.2024",
+        due_date="20.12.2024",
         priority="средний"
     )
 
@@ -72,7 +72,7 @@ def test_get_task(task_manager):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
     task_id = task_manager.tasks[0].id
@@ -90,14 +90,14 @@ def test_get_tasks(task_manager):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
     task_manager.add_task(
         title="Пройти курс Django",
         description="Изучить основы Django",
         category="Работа",
-        due_date="01.12.2024",
+        due_date="20.12.2024",
         priority="средний"
     )
     task_manager.add_task(
@@ -129,7 +129,7 @@ def test_edit_task(task_manager, capsys):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
 
@@ -153,7 +153,7 @@ def test_update_status(task_manager, capsys):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
 
@@ -180,7 +180,7 @@ def test_delete_task_by_id(task_manager, capsys):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
 
@@ -201,14 +201,14 @@ def test_delete_tasks_by_category(task_manager, capsys):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
     task_manager.add_task(
         title="Пройти курс Django",
         description="Изучить основы Django",
         category="Работа",
-        due_date="01.12.2024",
+        due_date="20.12.2024",
         priority="средний"
     )
     task_manager.add_task(
@@ -237,14 +237,14 @@ def test_search_tasks(task_manager, capsys):
         title="Изучить Python",
         description="Пройти основы языка",
         category="Обучение",
-        due_date="30.11.2024",
+        due_date="30.01.2025",
         priority="высокий"
     )
     task_manager.add_task(
         title="Пройти курс Django",
         description="Изучить основы Django",
         category="Работа",
-        due_date="01.12.2024",
+        due_date="20.12.2024",
         priority="средний"
     )
     task_manager.add_task(
